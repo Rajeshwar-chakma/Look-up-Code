@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- $Header: XXFND_LIST_LOOKUP_CODES.xml 100.000000 2020-09-09 00:00:00 cemlisup $ -->
+<dataTemplate version="1.0" name="XXFND_LIST_LOOKUP_CODES" defaultPackage="XXFND_LIST_LOOKUP_CODES_PKG">
+<properties> 
+	<property name="xml_tag_case" value="upper"/>
+</properties>
+<parameters>
+   <parameter name="P_LOOKUP_TYPE" dataType="character" />
+</parameters>
+<dataQuery>
+<sqlStatement name="Q_SHEET">
+<![CDATA[ 
+SELECT 
+	fltv.LOOKUP_TYPE_D,
+	fltv.LOOKUP_TYPE_MEANING_D
+FROM XXFND_LOOKUP_TYPES_D fltv
+WHERE fltv.request_id=FND_GLOBAL.CONC_REQUEST_ID
+AND fltv.LOOKUP_TYPE_D=:P_LOOKUP_TYPE]]>
+</sqlStatement>
+<sqlStatement name="Q_MAIN"> 
+<![CDATA[ 
+SELECT 
+	flvv.APPLICATION_NAME,
+    flvv.LOOKUP_TYPE_DESCRIPTION,
+	flvv.LOOKUP_CODE,
+	flvv.LOOKUP_CODE_MEANING,
+    flvv.LOOKUP_CODE_DESCRIPTION,
+	to_char(flvv.CREATION_DATE,'DD-MON-YYYY HH24:mi:ss') Creation_Date
+FROM XXFND_LOOKUP_VALUES_D flvv
+WHERE flvv.LOOKUP_TYPE=:LOOKUP_TYPE_D
+AND flvv.LOOKUP_TYPE=:P_LOOKUP_TYPE
+AND flvv.request_id=FND_GLOBAL.CONC_REQUEST_ID
+ORDER BY flvv.APPLICATION_ID, flvv.LOOKUP_TYPE]]>
+</sqlStatement>	
+</dataQuery>
+<dataTrigger name="beforeReportTrigger" source="XXFND_LIST_LOOKUP_CODES_PKG.beforeReportTrigger"/>
+<dataStructure>
+	<group name="Q_SHEET" dataType="varchar2" source="Q_SHEET">
+	  <element name="LOOKUP_TYPE_D"                 value="LOOKUP_TYPE_D"              dataType="varchar2"/>
+	  <element name="LOOKUP_TYPE_MEANING_D"         value="LOOKUP_TYPE_MEANING_D"      dataType="varchar2"/>
+	  <group name="Q_MAIN" dataType="varchar2" source="Q_MAIN">
+		  <element name="APPLICATION_NAME"            value="APPLICATION_NAME"         dataType="varchar2"/>
+		  <element name="LOOKUP_TYPE_DESCRIPTION"     value="LOOKUP_TYPE_DESCRIPTION"  dataType="varchar2"/>
+		  <element name="LOOKUP_TYPE_MEANING"         value="LOOKUP_TYPE_MEANING"      dataType="varchar2"/>
+		  <element name="LOOKUP_CODE"                 value="LOOKUP_CODE"              dataType="varchar2"/>
+		  <element name="LOOKUP_CODE_MEANING"         value="LOOKUP_CODE_MEANING"      dataType="varchar2"/>
+		  <element name="LOOKUP_TYPE_DESCRIPTION"     value="LOOKUP_TYPE_DESCRIPTION"  dataType="varchar2"/>
+		  <element name="CREATION_DATE"               value="CREATION_DATE"            dataType="varchar2"/>
+	  </group>
+	</group>
+</dataStructure>
+</dataTemplate>
